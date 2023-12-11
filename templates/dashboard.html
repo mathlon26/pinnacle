@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Controller</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container mt-5">
+        <button id="startBtn" class="btn btn-success" onclick="startBot()">Start Bot</button>
+        <button id="stopBtn" class="btn btn-danger" onclick="stopBot()">Stop Bot</button>
+    </div>
+
+    <!-- Include Bootstrap JS and Socket.IO -->
+    <script src="https://cdn.socket.io/4.1.3/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Connect to Socket.IO server
+        const socket = io('http://localhost:5000');
+
+        function startBot() {
+            // Emit a 'start_bot' message to the server
+            socket.emit('start_bot', 'Start the bot!');
+        }
+
+        function stopBot() {
+            // Emit a 'stop_bot' message to the server
+            socket.emit('stop_bot', 'Stop the bot!');
+        }
+    </script>
+</body>
+</html>

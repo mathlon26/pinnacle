@@ -1,0 +1,23 @@
+{
+  "lotsize": 0.1,
+  "stoploss": 50,
+  "takeprofit": 100,
+  "leverage": "1:100",
+  "magicnumber": 12345,
+  "maxorders": 5,
+  "riskpercentage": 2,
+  "trailingstop": 20,
+  "slippage": 3,
+  "tradecomment": "MyTradingBot",
+  "accounttype": "Demo",
+  "maxdrawdown": 10,
+
+  "symbols_to_trade": [
+    "EURUSD"
+  ],
+
+  "parameters": {
+
+  }
+  
+}
