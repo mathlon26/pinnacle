@@ -18,35 +18,38 @@ class Mt5():
     def name(self):
         return self.__class__.__name__
     
-    def start(self, callback_function=None):
+    def start(self, callback_function=None, status_update=None):
         try:
             if callback_function:
-                callback_function(" / : Authorizing...", 'BLUE')
+                callback_function(" LOADING : Authorizing...")
             this.initialize()
             self.started = True
+            status_update("started", True)
             if callback_function:
-                callback_function("√ : Authorized succesfully", 'GREEN')
+                callback_function("OK : Authorized succesfully")
         except Exception as e:
             if callback_function:
-                callback_function(f"Authorization failed. Error: {str(e)} \n Check if you have the right loging details in your auth.yaml", 'RED')
+                callback_function(f"ERROR : {str(e)} Authorization failed. Check if you have the right loging details in your auth.yaml", 'RED')
             else:
                 raise e
     
-    def stop(self, callback_function=None):
+    def stop(self, callback_function=None, status_update=None):
         if self.started:
             try:
                 if callback_function:
-                    callback_function(" / : Shutting down...", 'BLUE')
+                    callback_function("LOADING: Shutting down...")
                 this.initialize()
                 self.started = False
+                status_update("started", False)
+                
                 if callback_function:
-                    callback_function("√ : Shut down succesfully", 'GREEN')
+                    callback_function("OK : Shut down succesfully")
             except Exception as e:
                 if callback_function:
-                    callback_function(f"Shut down failed. Error: {str(e)} \n", 'RED')
+                    callback_function(f"ERROR : Shut down failed. Error: {str(e)} \n")
                 else:
                     raise e
         else:
             if callback_function:
-                    callback_function(f"Error: Bot has not started yet. \n", 'RED')
+                    callback_function(f"ERROR : Bot has not started yet. \n")
 

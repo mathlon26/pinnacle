@@ -60,17 +60,37 @@ class Set():
     def max_drawdown(self, max_dd):
         self.edit("maxdrawdown", max_dd)
 
+
+class Status():
+    def __init__(self, statusfile) -> None:
+        self.path = statusfile
+        self.status = open(statusfile, 'r')
+        
+    def set(self, key, value):
+        try:
+            with open(self.path, "r") as status_file:
+                status = json.load(status_file)
+        except FileNotFoundError:
+            status = {}
+            
+        status[key] = value
+        
+        with open(self.path, "w") as status_file:
+            json.dump(status, status_file, indent=2)
+        
+
 class Pinnacle():
     def __init__(self):
         self.mt5 = Mt5()
         self.ta = TA()
         self.set = Set()
+        self.status = Status("status.json")
         
     def start(self, callback_function=None):
-        self.mt5.start(callback_function=callback_function)
+        self.mt5.start(callback_function=callback_function, status_update=self.status.set)
     
     def stop(self, callback_function=None):
-        self.mt5.stop(callback_function=callback_function)
+        self.mt5.stop(callback_function=callback_function, status_update=self.status.set)
         
     def name(self):
         return self.__class__.__name__
