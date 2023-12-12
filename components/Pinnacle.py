@@ -1,7 +1,8 @@
 from .technicalAnalysis import technicalAnalysis as TA
 from .mt5 import Mt5
+from .logger import Logger
 import json
-
+import yaml
 class Set():
     def __init__(self):
         pass
@@ -59,42 +60,107 @@ class Set():
         
     def max_drawdown(self, max_dd):
         self.edit("maxdrawdown", max_dd)
-
-
-class Status():
-    def __init__(self, statusfile) -> None:
-        self.path = statusfile
-        self.status = open(statusfile, 'r')
         
-    def set(self, key, value):
+class Get():
+    def __init__(self):
+        pass
+    
+    def get(self, key):
         try:
-            with open(self.path, "r") as status_file:
-                status = json.load(status_file)
+            with open("config.json", "r") as config_file:
+                config = json.load(config_file)
         except FileNotFoundError:
-            status = {}
+            config = {}
             
-        status[key] = value
+        return config[key]
         
-        with open(self.path, "w") as status_file:
-            json.dump(status, status_file, indent=2)
+    def lot_size(self):
+        return self.get("lotsize")
+        
+    def stop_loss(self):
+        return self.get("stoploss")
+        
+    def take_profit(self):
+        return self.get("takeprofit")
+        
+    def leverage(self):
+        return self.get("leverage")
+        
+    def symbols_to_trade(self):
+        return self.get("symbols_to_trade")
+        
+    def magic_number(self):
+        return self.get("magicnumber")
+        
+    def max_orders(self):
+        return self.get("maxorders")
+        
+    def risk_percentage(self):
+        return self.get("riskpercentage")
+        
+    def trailing_stop(self):
+        return self.get("trailingstop")
+        
+    def slippage(self):
+        return self.get("slippage")
+        
+    def trade_comment(self):
+        return self.get("tradecomment")
+        
+    def account_type(self):
+        return self.get("accounttype")
+        
+    def parameters(self):
+        return self.get("customindicatorparameters")
+        
+    def max_drawdown(self):
+        return self.get("maxdrawdown")
+    
+    
         
 
 class Pinnacle():
-    def __init__(self):
+    def __init__(self, auth_file):
+        self.logger = Logger()
         self.mt5 = Mt5()
         self.ta = TA()
         self.set = Set()
-        self.status = Status("status.json")
-        
-    def start(self, callback_function=None):
-        self.mt5.start(callback_function=callback_function, status_update=self.status.set)
+        self.get = Get()
+        self.auth_file = auth_file
     
-    def stop(self, callback_function=None):
-        self.mt5.stop(callback_function=callback_function, status_update=self.status.set)
+    def serve_status(self):
+        return self.status
+        
+    
+    def account_info(self):
+        return self.mt5.get.info()
+    
+    def buy(self):
+        return self.mt5.get.info()
+      
+    def sell(self):
+        return self.mt5.get.info()
+    
+    def close_all(self):
+        return self.mt5.get.info()
+        
+    def login(self):
+        with open(self.auth_file, 'r') as file:
+            auth = yaml.safe_load(file)
+            login = auth['authentication']['login']
+            server = auth['authentication']['server']
+            password = auth['authentication']['password']
+        self.mt5.login(login, server, password)
+        
+        
+    def start(self, callback_function=None, status_update=None):
+        self.mt5.start(callback_function=callback_function)
+    
+    def stop(self, callback_function=None, status_update=None):
+        self.mt5.stop(callback_function=callback_function)
         
     def name(self):
         return self.__class__.__name__
-    
     
     
     

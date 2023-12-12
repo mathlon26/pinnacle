@@ -1,46 +1,51 @@
 import MetaTrader5 as this
-
-class Get():
-    def __init__(self, mt5_inst):
-        self.mt5_inst = mt5_inst
-    
-    def market_data(self, symbol, timeframe, range=[0, 100]):
-        try:
-            if self.mt5_inst.started:
-                print("success")
-        except Exception as e:
-                raise e
+from datetime import datetime, timedelta
+import json
+import yaml
+   
 class Mt5():
     def __init__(self) -> None:
-        self.get = Get(self)
-        self.started = False
+        self.status = False
+        self.id = None
+        self.server_name = None
+        self.password = None
+        self.origin = this
+
         
     def name(self):
         return self.__class__.__name__
     
-    def start(self, callback_function=None, status_update=None):
-        try:
-            if callback_function:
-                callback_function(" LOADING : Authorizing...")
-            this.initialize()
-            self.started = True
-            status_update("started", True)
-            if callback_function:
-                callback_function("OK : Authorized succesfully")
-        except Exception as e:
-            if callback_function:
-                callback_function(f"ERROR : {str(e)} Authorization failed. Check if you have the right loging details in your auth.yaml", 'RED')
-            else:
-                raise e
+    def login(self, _login, _server, _password):
+        this.initialize()
+        self.id = _login
+        self.server_name = _server
+        self.password = _password
+        this.login(login=_login, server=_server, password=_password)    
     
-    def stop(self, callback_function=None, status_update=None):
-        if self.started:
+    def start(self, callback_function=None):
+        if not self.status:
+            try:
+                if callback_function:
+                    callback_function("LOADING : Authorizing...")
+                this.initialize()
+                self.status = True
+                if callback_function:
+                    callback_function("OK : Authorized succesfully")
+            except Exception as e:
+                if callback_function:
+                    callback_function(f"ERROR : {str(e)} Authorization failed. Check if you have the right loging details in your auth.yaml", 'RED')
+                else:
+                    raise e
+        else:
+            if callback_function:
+                    callback_function(f"ERROR : Bot already started. \n")
+    def stop(self, callback_function=None):
+        if self.status:
             try:
                 if callback_function:
                     callback_function("LOADING: Shutting down...")
                 this.initialize()
-                self.started = False
-                status_update("started", False)
+                self.status = False
                 
                 if callback_function:
                     callback_function("OK : Shut down succesfully")
@@ -52,4 +57,21 @@ class Mt5():
         else:
             if callback_function:
                     callback_function(f"ERROR : Bot has not started yet. \n")
+                    
+    def get_account_info(self):
+        self.start()
+        return this.account_info()
+    
+    def get_positions_total(self):
+        self.start()
+        return this.positions_total()
+    
+    
+    def get_data(self):
+        data = {}
+        data["positions_total": self.get_positions_total()]
+        
+        return data
+                    
+        
 

@@ -1,25 +1,24 @@
-import sys
-import threading
-import io
-class LoggerStream(io.StringIO):
-    def __init__(self, callback_function, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.callback_function = callback_function
-
-    def write(self, s):
-        super().write(s)
-        sys.__stdout__.write(s)  # Write to the original sys.stdout as well
-        if self.callback_function:
-            self.callback_function(s)
 
 
+class Logger():
+    def __init__(self) -> None:
+        pass
+    
+    def R(self):
+        return open('logs/bot.log', 'r').read()
+    
+    def A(self, msg):
+        with open('logs/bot.log', 'a') as file:
+            file.write(msg + "\n")
+    
+    def W(self, msg):
+        with open('logs/bot.log', 'w') as file:
+            file.write(msg + "\n")
+    
+    def log(self, msg):
+        self.A(msg)
 
-
-def start_logging():
-    logger_stream = LoggerStream(callback_function=update_server_log)
-    sys.stdout = logger_stream
-
-# Start the logging in a separate thread
-logging_thread = threading.Thread(target=start_logging)
-logging_thread.daemon = True
-logging_thread.start()
+    def reset(self):
+        with open('logs/bot.log', 'w') as file:
+            file.write("Session Started \n----------------\n")
+ 

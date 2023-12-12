@@ -19,6 +19,82 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}" rel="stylesheet">
+
+    <style>
+        #wrapper {
+            overflow-x: hidden;
+        }
+        
+        #accordionSidebar {
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        #content-wrapper {
+            margin-left: 250px; /* Adjust this value to match the width of your sidebar */
+            transition: margin 0.5s;
+        }
+        
+        #content {
+            width: 100%;
+        }
+        
+        #sidebarToggle {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            z-index: 1;
+        }
+
+        #main-content, nav{
+           width: calc(100% - 224px);
+           margin-left: 224px;
+           align-content: left;
+        }
+        
+        @media (min-width: 768px) {
+            #accordionSidebar {
+                width: 250px; /* Adjust this value to match the width of your sidebar */
+            }
+        
+            #content-wrapper {
+                margin-left: 0;
+            }
+        }
+        @media (max-width: 768px) {
+            #accordionSidebar {
+                width: 100%; /* Make the sidebar full width on smaller screens */
+                position: static;
+                height: auto;
+                overflow-y: auto;
+            }
+    
+            #content-wrapper {
+                margin-left: 0;
+            }
+    
+            #sidebarToggle {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                z-index: 1;
+            }
+    
+            #main-content,
+            nav {
+                width: 100%;
+                margin-left: 0;
+                align-content: left;
+            }
+    
+            #content-wrapper {
+                margin-left: 0; /* Adjust this value for your specific design */
+            }
+        }
+        
+    </style>
+
 </head>
 
 <body id="page-top">
@@ -102,11 +178,14 @@
             <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            <li class="nav-item">
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+            </li>
 
         </ul>
+        
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -116,7 +195,7 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" id="nav">
 
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -124,22 +203,22 @@
                     </button>
 
                     <!-- Topbar Status -->
-                    <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+                    <div id="activeStatus" class="card text-white bg-danger mb-3" style="max-width: 18rem;">
                         <div class="card-body">
-                            <p class="card-text">Bot Inactive</p>
+                            <p id="activeStatusText" class="card-text">Bot Inactive</p>
                         </div>
                     </div>
 
                     <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ml-auto align-items-center">
 
                         <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
+                        <li class="nav-item dropdown no-arrow mx-1  d-none d-sm-block">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
+                                <span class="badge badge-danger badge-counter" id="alertCount"></span>
                             </a>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -147,70 +226,21 @@
                                 <h6 class="dropdown-header">
                                     Alerts Center
                                 </h6>
-                                <div class="dropdown-item d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                    <div>
-                                        <button class="fas fa-trash text-gray-500 bg-transparent border-0"></button>
-                                    </div>
+    
+                                <div id="dropdownAlerts">
+
                                 </div>
-                                <div class="dropdown-item d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                    <div>
-                                        <button class="fas fa-trash text-gray-500 bg-transparent border-0"></button>
-                                    </div>
-                                </div>
-                                <div class="dropdown-item d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                    <div>
-                                        <button class="fas fa-trash text-gray-500 bg-transparent border-0"></button>
-                                    </div>
-                                    
-                                </div>
-                                <button class="dropdown-item text-center small text-gray-500" href="#">Delete All Alerts</button>
+                                <button class="dropdown-item text-center small text-gray-500" onclick="deleteAllAlerts()">Delete All Alerts</button>
                             </div>
                         </li>
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
-                        <div class="d-flex align-items-center">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                <div class="nav-item">
-                                    <button id="startBtn" class="btn btn-success" onclick="startBot()">Start Bot</button>
-                                </div>
-                            </span>
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                <div class="nav-item">
-                                    <button id="stopBtn" class="btn btn-danger disabled" disabled onclick="stopBot()">Stop Bot</button>
-                                </div>
-                            </span>
-                        </div>
                         
-                        <li class="nav-item dropdown no-arrow">
+                        
+                        
+                        <li class="nav-item dropdown no-arrow  d-none d-sm-block">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-fw fa-cog fa-lg text-gray-400"></i>
@@ -239,15 +269,15 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid" id="main-content">
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                        <button onclick="reload()" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                             <i class="fa-solid fa-arrows-rotate">
 
-                        </i> Refresh Dashboard</a>
+                        </i> Refresh Dashboard</button>
                     </div>
 
                     <!-- Content Row -->
@@ -414,7 +444,7 @@
                                 </div>
                                 <div class="card-body">
                                     <!-- Make the table horizontally scrollable -->
-                                    <div class="table-responsive">
+                                    <div class="table-responsive" id="openPositionsTableContainer">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -466,7 +496,7 @@
                                 </div>
                                 <div class="card-body">
                                     <!-- Make the table horizontally scrollable -->
-                                    <div class="table-responsive">
+                                    <div class="table-responsive" id="historyTableContainer">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -514,7 +544,11 @@
                                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
                                         <button id="botConsoleBtn" class="btn btn-primary active" onclick="switchConsole('botConsole')">Bot Terminal</button>
-                                        <button id="serverConsoleBtn" class="btn btn-primary" onclick="switchConsole('serverConsole')">Server Terminal</button>
+                                        <button id="serverConsoleBtn" class="btn btn-primary" onclick="switchConsole('serverConsole')">Server Terminal</button>                                        
+                                    </div>
+                                    <div class="btn-group">
+                                        <button id="startBtn" class="btn btn-success" onclick="startBot()">Start Bot</button>
+                                        <button id="stopBtn" class="btn btn-danger disabled" disabled onclick="stopBot()">Stop Bot</button>
                                     </div>
                                     <div id="currentTime" class="float-right"></div>
                                 </div>
@@ -532,7 +566,7 @@
                     <div class="row" id="configTable">
 
                         <!-- Config Table Column -->
-                        <div class="col-lg-8 mx-auto mb-4">
+                        <div class="col-lg-8 mx-auto mb-4" id="settings">
                             <!-- Config Table Card -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -545,6 +579,7 @@
                                         <table class="table table-bordered" id="configTableBody">
                                             <!-- Table body will be populated dynamically with JavaScript -->
                                         </table>
+                                        <div id="subTable"></div>
                                     </div>
                                 </div>
                             </div>
@@ -602,25 +637,32 @@
         
         const startButton = document.getElementById("startBtn");
         const stopButton = document.getElementById("stopBtn");
-
+        const monthlyEarnings = document.getElementById("monthlyEarnings");
+        const annualErnings = document.getElementById("annualEarnings");
+        const currentEquity = document.getElementById("currentEquity");
+        const numberOfPositions = document.getElementById("nOpenPositions");
+        const openPositionsTableContainer = document.getElementById("openPositionsTableContainer");
+        const historyTableContainer = document.getElementById("historyTableContainer");
+        const activeStatus = document.getElementById("activeStatus");
+        const activeStatusText = document.getElementById("activeStatusText");
         function startBot() {
             // Emit a 'start_bot' message to the server
-            socket.emit('start_bot', 'Start the bot!');
+            socket.emit('start_bot', 'Start the bot');
             startButton.disabled = true;
             startButton.classList.add('disabled');
-            setTimeout(checker, 7000);
+            setTimeout(checker, 2000);
         }
     
         function stopBot() {
             // Emit a 'stop_bot' message to the server
-            socket.emit('stop_bot', 'Stop the bot!');
+            socket.emit('stop_bot', 'Stop the bot');
             stopButton.disabled = true;
             stopButton.classList.add('disabled');
-            setTimeout(checker, 7000);
+            setTimeout(checker, 2000);
         }
 
         function checker() {
-            fetch("/status")
+            fetch("/bot/status")
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -628,12 +670,19 @@
                     return response.json();
                 })
                 .then(data => {
-                    if (data['started']) {
+                    if (data['status']) {
+                        activeStatus.classList.add('bg-success');
+                        activeStatus.classList.remove('bg-danger');
+                        activeStatusText.innerText = "Bot Active"; 
                         startButton.disabled = true;
                         startButton.classList.add('disabled');
                         stopButton.disabled = false;
                         stopButton.classList.remove('disabled');
                     } else {
+                        console.log(data['status']);
+                        activeStatus.classList.remove('bg-success');
+                        activeStatus.classList.add('bg-danger');
+                        activeStatusText.innerText = "Bot Inactive"; 
                         startButton.disabled = false;
                         startButton.classList.remove('disabled');
                         stopButton.disabled = true;
@@ -642,18 +691,19 @@
                 })
                 .catch(error => console.error("Error fetching status.json:", error));
         }
-    </script>
-    <script>
+
+    
         function updateCurrentTime() {
             const currentTimeElement = document.getElementById("currentTime");
             const currentTime = new Date().toLocaleTimeString();
             currentTimeElement.innerText = currentTime;
+
         }
     
         // Update the current time every second
         setInterval(updateCurrentTime, 1000);
-    
         // Initial update
+        checker()
         updateCurrentTime();
     </script>
     <script>
@@ -672,19 +722,19 @@
                 serverConsoleBtn.classList.remove('active');
                 botConsole.style.display = 'block';
                 serverConsole.style.display = 'none';
-                fetchAndDisplayContent('bot.log', botConsole, botConsoleData);
+                fetchAndDisplayContent('bot', botConsole, botConsoleData);
             } else {
                 botConsoleBtn.classList.remove('active');
                 serverConsoleBtn.classList.add('active');
                 botConsole.style.display = 'none';
                 serverConsole.style.display = 'block';
-                fetchAndDisplayContent('server.log', serverConsole, serverConsoleData);
+                fetchAndDisplayContent('server', serverConsole, serverConsoleData);
             }
         }
     
         function fetchAndDisplayContent(logFileName, targetElement, dataEl) {
             setInterval(() => {
-                fetch(`/logs/${logFileName}`)
+                fetch(`/terminal/${logFileName}`)
                     .then(response => response.text())
                     .then(data => {
                         dataEl.innerHTML = data;
@@ -702,6 +752,12 @@
         // Fetch and display content on page load
         document.addEventListener("DOMContentLoaded", function () {
             fetchConfig();
+            createAllert("12/12/2023", "test", "arrow")
+            createAllert("12/12/2023", "test", "arrow")
+            createAllert("12/12/2023", "test", "arrow")
+            createAllert("12/12/2023", "test", "arrow")
+            createAllert("12/12/2023", "test", "arrow")
+            createAllert("12/12/2023", "test", "arrow")
         });
 
         // Function to fetch and display config.json content
@@ -736,10 +792,28 @@
                     const cellKey = row.insertCell(0);
                     const cellValue = row.insertCell(1);
 
-                    cellKey.textContent = key;
+                    cellKey.innerHTML = `<div contenteditable="true">${key}</div>`;
                     cellValue.innerHTML = `<div contenteditable="true">${value}</div>`;
                 }
             }
+            const rowParent = document.getElementById('subTable');
+            rowParent.innerHTML = `<button class="btn btn-primary" onClick="addRow()">Add Row</button>`
+        }
+        // Function to add a new row to the config table
+        function addRow() {
+            const configTableBody = document.getElementById("configTableBody");
+
+            // Create a new row and append it to the table body
+            const newRow = configTableBody.insertRow();
+            const cellKey = newRow.insertCell(0);
+            const cellValue = newRow.insertCell(1);
+
+            // Set default values or leave them blank
+            cellKey.innerHTML = `<div contenteditable="true">NewKey</div>`;
+            cellValue.innerHTML = `<div contenteditable="true">NewValue</div>`;
+        }
+        function reload() {
+            location.reload();
         }
 
         // Function to save changes made in the table back to config.json
@@ -754,8 +828,9 @@
             for (let i = 0; i < configTableBody.rows.length; i++) {
                 const key = configTableBody.rows[i].cells[0].textContent;
                 const value = configTableBody.rows[i].cells[1].querySelector('div').textContent;
-
-                updatedConfig[key] = value;
+                if (key != null && key != "") {
+                    updatedConfig[key] = value;
+                }
             }
 
             // Use fetch to send the updatedConfig to the server for saving
@@ -776,8 +851,62 @@
                 console.log("Config saved successfully:", data);
             })
             .catch(error => console.error("Error saving config:", error));
+            location.reload();
         }
-    </script>
+
+        function createAllert(date, msg, icon_name) {
+            const count = document.getElementById('alertCount');
+            const alertContainer = document.getElementById("dropdownAlerts");
+            const alerts = alertContainer.getElementsByClassName('dropdown-item');
+            const index = alertContainer.childElementCount;
+            // Create a new div element
+            const newDiv = document.createElement('div');
+            newDiv.classList.add('dropdown-item', 'd-flex', 'align-items-center');
+            newDiv.id = index;
+            // Set the inner HTML of the new div with the provided parameters
+            newDiv.innerHTML = `
+                <div class="mr-3">
+                    <div class="icon-circle bg-primary">
+                        <i class="fas fa-${icon_name} text-white"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="small text-gray-500">${date}</div>
+                    <span class="font-weight-bold">${msg} ${index}</span>
+                </div>
+                <div>
+                    <button onClick="deleteAllert(${index})" class="fas fa-trash text-gray-500 bg-transparent border-0"></button>
+                </div>
+            `;
+    
+            // Append the new div to the alert container
+            alertContainer.appendChild(newDiv);
+            count.innerText = `+${alerts.length}`;
+        }
+    
+        function deleteAllert(index) {
+            const count = document.getElementById('alertCount');
+            const alertContainer = document.getElementById("dropdownAlerts");
+            const alerts = alertContainer.getElementsByClassName('dropdown-item');
+            const alert = document.getElementById(index.toString());
+    
+            alert.remove();
+            count.innerText = `+${alerts.length}`;
+
+        }
+    
+        function deleteAllAlerts() {
+            const count = document.getElementById('alertCount');
+            const alertContainer = document.getElementById("dropdownAlerts");
+            const alerts = alertContainer.getElementsByClassName('dropdown-item');
+    
+            // Iterate in reverse to avoid issues when removing elements
+            for (let i = alerts.length - 1; i >= 0; i--) {
+                alerts[i].remove();
+            }
+            count.innerText = `+${alerts.length}`;
+        }
+        </script>
     
 </body>
 
